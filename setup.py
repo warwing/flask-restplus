@@ -46,7 +46,7 @@ long_description = '\n'.join((
 exec(compile(open('flask_restplus/__about__.py').read(), 'flask_restplus/__about__.py', 'exec'))
 
 tests_require = ['nose', 'rednose', 'blinker', 'tzlocal']
-install_requires = ['Flask>=0.8', 'six>=1.3.0', 'pytz', 'aniso8601>=0.82']
+install_requires = ['Flask>=0.8', 'six>=1.3.0', 'pytz', 'aniso8601>=0.82', 'flask-wtf']
 doc_require = ['sphinx', 'alabaster', 'sphinx_issues']
 dev_requires = ['flake8', 'minibench', 'tox', 'invoke>=0.13'] + tests_require + doc_require
 

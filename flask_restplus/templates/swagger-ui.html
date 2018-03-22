@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+    {% if config.WTF_CSRF_ENABLED %}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    {% endif %}
     <title>{{ title }}</title>
     {% include 'swagger-ui-css.html' %}
     {% include 'swagger-ui-libs.html' %}
@@ -23,6 +26,18 @@
                 validatorUrl: "{{ config.SWAGGER_VALIDATOR_URL }}" || null,
                 dom_id: "swagger-ui-container",
                 supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
+                {% if config.WTF_CSRF_ENABLED %}
+                authorizations: {
+                    csrfInterceptor: function() {
+                        // This function will get called /before/ each request
+                        // ... UNLESS you have a 'security' tag in the swagger.json file, 
+                        // ... in which case you must add 'csrfInterceptor' to the list of auths.
+                        var csrftoken = $('meta[name=csrf-token]').attr('content')
+                        this.headers['X-CSRFToken'] = csrftoken; 
+                        return true; 
+                    }
+                },
+                {% endif %}
                 onComplete: function(swaggerApi, swaggerUi){
                     if(typeof initOAuth == "function") {
                         {% if config.SWAGGER_UI_OAUTH_CLIENT_ID -%}
