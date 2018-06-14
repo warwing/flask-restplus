@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+	{% if config.WTF_CSRF_ENABLED %}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    {% endif %}
     <title>{{ title }}</title>
     {% include 'swagger-ui-css.html' %}
 
@@ -53,6 +56,15 @@
                 url: "{{ specs_url }}",
                 validatorUrl: "{{ config.SWAGGER_VALIDATOR_URL }}" || null,
                 dom_id: "#swagger-ui",
+                {% if config.WTF_CSRF_ENABLED %}
+                requestInterceptor: function(request) {
+                	if (request.method != 'GET' && request.method != undefined) {
+                		var metas = document.getElementsByTagName('meta'); 
+                		var csrftoken = Array.from(metas).filter(e => e.name == 'csrf-token')[0]['content'];
+                		request.headers['X-CSRFToken'] = csrftoken;
+                	}
+                },
+                {% endif %}
                 presets: [
                     SwaggerUIBundle.presets.apis,
                     SwaggerUIStandalonePreset.slice(1) // No Topbar
