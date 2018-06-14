@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import
-
+from __future__ import absolute_import, unicode_literals
+from datetime import datetime
+from invoke import task
 import os
+import re
 import sys
 
-from datetime import datetime
-
-from invoke import task
 
 ROOT = os.path.dirname(__file__)
 
@@ -187,6 +186,42 @@ def assets(ctx):
         # Until next release we need to install droid sans separately
         ctx.run('cp node_modules/typeface-droid-sans/index.css flask_restplus/static/droid-sans.css')
         ctx.run('cp -R node_modules/typeface-droid-sans/files flask_restplus/static/')
+
+
+def replace_dev_version(replacement):
+    version_replaced = False
+    dev_version_detect_regex = re.compile(r"__version__\s*=\s*'([0-9]+\.[0-9]+\.[0-9]+\.dev)([0-9]*)'")
+    source_file_name = os.path.join('flask_restplus', '__about__.py')
+    target_file_name = os.path.join('flask_restplus', '__about__.tmp')
+    with open(source_file_name) as source:
+        with open(target_file_name, 'w') as target:
+            for line in source:
+                match = dev_version_detect_regex.search(line)
+                if match:
+                    new_version = match.group(1) + replacement
+                    modified_line = re.sub("'[^']+'", "'" + new_version + "'", line)
+                    target.write(modified_line)
+                    version_replaced = True
+                else:
+                    target.write(line)
+    if version_replaced:
+        os.renames(target_file_name, source_file_name)
+    else:
+        os.remove(target_file_name)
+
+
+@task
+def versionbuild(ctx):
+    '''Patch dev version, so that it contains current timestamp'''
+    header(versionbuild.__doc__)
+    replace_dev_version(datetime.utcnow().strftime("%Y%m%d%H%M%S"))
+
+
+@task
+def versionclean(ctx):
+    '''For dev versions, remove timestamp before commit'''
+    header(versionclean.__doc__)
+    replace_dev_version('')
 
 
 @task
