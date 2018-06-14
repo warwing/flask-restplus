@@ -1,6 +1,6 @@
 {
-  "name": "flask-restplus",
-  "version": "0.10.1",
+  "name": "flask-restplus-adt",
+  "version": "0.11.0",
   "description": "Fully featured framework for fast, easy and documented API development with Flask",
   "repository": "noirbizarre/flask-restplus",
   "keywords": [
@@ -12,5 +12,11 @@
   "dependencies": {
     "swagger-ui-dist": "^3.4.0",
     "typeface-droid-sans": "0.0.40"
+  },
+  "devDependencies": {
+    "bower": "^1.8.4"
+  },
+  "scripts": {
+    "bower": "bower"
   }
 }

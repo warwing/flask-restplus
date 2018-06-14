@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 # flake8: noqa
 
+from setuptools import find_packages, setup
 import io
 import os
 import re
 import sys
 
-from setuptools import setup, find_packages
 
 RE_REQUIREMENT = re.compile(r'^\s*-r\s*(?P<filename>.*)$')
 
@@ -37,7 +37,6 @@ def rst(filename):
     return content
 
 
-
 def pip(filename):
     '''Parse pip reqs file and transform it to setuptools requirements.'''
     requirements = []
@@ -63,7 +62,7 @@ doc_require = pip('doc')
 tests_require = pip('test')
 
 setup(
-    name='flask-restplus',
+    name='flask-restplusa-adt',
     version=__version__,
     description=__description__,
     long_description=long_description,
